@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Twists</title>
-  <link rel="stylesheet" href="estilo_intermedio.css" />
+  <title>Generador de Twists</title>
+  <link rel="stylesheet" href="estilo.css" />
 </head>
 <body>
-  <div class="main-layout">
-    <!-- Panel izquierdo -->
+  <main class="main-layout">
+    <!-- Panel Izquierdo: Generador -->
     <section class="left-panel">
+      <button id="darkModeToggle" class="dark-mode-toggle">🌙</button>
       <h2>Generador de Twists</h2>
-      <textarea id="twistInput" placeholder="¿Qué estás pensando?" rows="3"></textarea>
-      <button id="publishBtn">Twittear</button>
+      <!-- Dentro del left-panel, al inicio -->
+      <textarea id="tweetInput" placeholder="¿Qué estás pensando?" rows="4"></textarea>
+      <button id="postButton">Twittear</button>
+
+      <!-- Opcional: contenido para inspirar al usuario -->
       <div class="inspiration-box">
-        <p><strong>¿Necesitas inspiración?</strong></p>
+        <h4>¿Necesitas inspiración?</h4>
         <ul>
           <li>Cuenta algo que aprendiste hoy.</li>
           <li>Comparte una idea breve.</li>
@@ -23,10 +27,12 @@
       </div>
     </section>
 
-    <!-- Panel derecho -->
-    <section class="right-panel" id="twistThread">
-    </section>
-  </div>
+    <!-- Panel Derecho: Tweets -->
+    <section class="right-panel" id="tweetContainer">
+      <!-- Aquí se renderizan los tweets dinámicamente desde TypeScript -->
+  </main>
+
+  <!-- Scripts al final del cuerpo -->
   <script type="module" src="app.js"></script>
 </body>
 </html>

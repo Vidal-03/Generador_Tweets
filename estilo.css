@@ -1,23 +1,26 @@
 body {
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
   background-color: #f5f8fa;
 }
 
 .main-layout {
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
 .left-panel {
   width: 30%;
   background-color: #ffffff;
-  padding: 25px;
+  padding: 35px;
   box-shadow: 2px 0 8px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: flex-start;
+  gap: 20px;
+  overflow-y: auto;
 }
 
 .left-panel textarea {
@@ -47,70 +50,88 @@ body {
   background-color: #e8f5fd;
   padding: 10px;
   border-radius: 8px;
-  font-size: 13px;
 }
 
-.inspiration-box p {
-  margin: 0 0 5px;
-  font-weight: bold;
+.inspiration-box h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
   color: #1da1f2;
 }
 
 .inspiration-box ul {
   padding-left: 18px;
-  color: #333;
+  font-size: 13px;
+  color: #555;
 }
 
 .right-panel {
-  flex: 1;
+  width: 70%;
   padding: 20px;
   overflow-y: auto;
 }
 
-.twist {
-  background-color: #ffffff;
+.tweet {
+  background-color: white;
   border-radius: 10px;
   margin-bottom: 15px;
   padding: 15px;
-  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-.twist p {
+.tweet p {
   margin: 0 0 5px;
   font-size: 15px;
 }
 
-.twist small {
+.tweet small {
   color: #555;
   font-size: 12px;
 }
 
-button.reply-button,
-button.submit-reply,
-button.replies-toggle {
+.reply-button {
   margin-top: 10px;
-  font-size: 13px;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 20px;
-  cursor: pointer;
   background-color: #1da1f2;
   color: white;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-button.replies-toggle {
+.reply-button:hover {
+  background-color: #0d8ddb;
+}
+
+/* Botón principal de twittear y responder */
+.submit-reply {
+  margin-top: 8px;
+  background-color: #1da1f2;
+  color: white;
+  font-size: 14px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-reply:hover {
+  background-color: #0d8ddb;
+}
+
+
+/* Estilo minimalista para ocultar/mostrar respuestas */
+.replies-toggle {
+  margin-top: 8px;
   background-color: transparent;
   color: #1da1f2;
+  font-size: 13px;
+  border: none;
   padding: 0;
-  margin-left: 5px;
-  font-weight: bold;
-}
-
-.replies {
-  margin-left: 20px;
-  margin-top: 10px;
-  padding-left: 10px;
-  border-left: 2px dashed #ccc;
+  cursor: pointer;
 }
 
 .reply-box {
@@ -127,4 +148,75 @@ button.replies-toggle {
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 13px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/*dark mode*/
+.dark-mode-toggle {
+  align-self: flex-end;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #1da1f2;
+  transition: color 0.3s;
+}
+
+.dark-mode-toggle:hover {
+  color: #0d8ddb;
+}
+
+body.dark-mode {
+  background-color: #15202b;
+  color: #ffffff;
+}
+
+body.dark-mode .left-panel {
+  background-color: #192734;
+  box-shadow: 2px 0 8px rgba(255,255,255,0.05);
+}
+
+body.dark-mode .right-panel {
+  background-color: #15202b;
+}
+
+body.dark-mode .tweet {
+  background-color: #22303c;
+  color: #e1e8ed;
+}
+
+body.dark-mode .inspiration-box {
+  background-color: #253341;
+  color: #e1e8ed;
+}
+
+body.dark-mode .inspiration-box h4 {
+  color: #1da1f2;
+}
+
+body.dark-mode .inspiration-box ul {
+  color: #8899a6;
+}
+
+body.dark-mode textarea,
+body.dark-mode .reply-box textarea {
+  background-color: #192734;
+  color: #ffffff;
+  border: 1px solid #38444d;
+}
+
+body.dark-mode .left-panel button,
+body.dark-mode .reply-button,
+body.dark-mode .submit-reply {
+  background-color: #1da1f2;
+  color: white;
+}
+
+body.dark-mode .replies-toggle {
+  color: #1da1f2;
 }

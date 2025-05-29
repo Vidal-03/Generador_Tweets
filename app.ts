@@ -1,87 +1,132 @@
-const publishBtn = document.getElementById('publishBtn') as HTMLButtonElement;
-const twistInput = document.getElementById('twistInput') as HTMLTextAreaElement;
-const twistThread = document.getElementById('twistThread') as HTMLElement;
+document.addEventListener("DOMContentLoaded", () => {
+  interface Tweet {
+    id: string;
+    content: string;
+    createdAt: Date;
+    replies: Tweet[];
+    showReplies: boolean; // Nuevo estado de visibilidad
+  }
 
-class Twist {
-  public replies: Twist[] = [];
+  const tweets: Tweet[] = [];
 
-  constructor(public content: string, public timestamp: Date = new Date()) {}
+  const tweetInput = document.getElementById("tweetInput") as HTMLTextAreaElement;
+  const postButton = document.getElementById("postButton") as HTMLButtonElement;
+  const tweetContainer = document.getElementById("tweetContainer") as HTMLDivElement;
 
-  render(): HTMLElement {
-    const twistElement = document.createElement('div');
-    twistElement.className = 'twist';
+  function generateId(): string {
+    return crypto.randomUUID();
+  }
 
-    const contentText = document.createElement('p');
-    contentText.textContent = this.content;
+  function createTweet(content: string): Tweet {
+    return {
+      id: generateId(),
+      content,
+      createdAt: new Date(),
+      replies: [],
+      showReplies: true, // Se inicializa como visibles
+    };
+  }
 
-    const timestamp = document.createElement('small');
-    timestamp.textContent = this.timestamp.toLocaleString();
+  function renderTweet(tweet: Tweet, depth = 0): HTMLElement {
+    const div = document.createElement("div");
+    div.className = "tweet";
+    div.style.marginLeft = `${depth * 20}px`;
 
-    const replyButton = document.createElement('button');
-    replyButton.textContent = 'Responder';
-    replyButton.className = 'reply-button';
+    const contentP = document.createElement("p");
+    contentP.textContent = tweet.content;
 
-    const toggleRepliesBtn = document.createElement('button');
-    toggleRepliesBtn.textContent = 'Ocultar respuestas';
-    toggleRepliesBtn.className = 'replies-toggle';
-    toggleRepliesBtn.style.display = 'none';
+    const timestamp = document.createElement("small");
+    timestamp.textContent = tweet.createdAt.toLocaleString();
 
-    const repliesContainer = document.createElement('div');
-    repliesContainer.className = 'replies';
+    const replyButton = document.createElement("button");
+    replyButton.textContent = "Responder";
+    replyButton.className = "reply-button";
 
-    const replyBox = document.createElement('div');
-    replyBox.className = 'reply-box';
-    replyBox.style.display = 'none';
+    const replyInput = document.createElement("textarea");
+    replyInput.placeholder = "Escribe tu respuesta...";
+    replyInput.className = "reply-input";
+    replyInput.style.display = "none";
 
-    const replyInput = document.createElement('textarea');
-    replyInput.rows = 2;
-    replyInput.placeholder = 'Escribe una respuesta...';
+    const submitReplyButton = document.createElement("button");
+    submitReplyButton.textContent = "Enviar respuesta";
+    submitReplyButton.style.display = "none";
+    submitReplyButton.className = "submit-reply";
 
-    const sendReplyBtn = document.createElement('button');
-    sendReplyBtn.textContent = 'Enviar';
-    sendReplyBtn.className = 'submit-reply';
-
-    replyButton.addEventListener('click', () => {
-      replyBox.style.display = replyBox.style.display === 'none' ? 'flex' : 'none';
+    replyButton.addEventListener("click", () => {
+      const isVisible = replyInput.style.display === "block";
+      replyInput.style.display = isVisible ? "none" : "block";
+      submitReplyButton.style.display = isVisible ? "none" : "inline-block";
     });
 
-    toggleRepliesBtn.addEventListener('click', () => {
-      const hidden = repliesContainer.style.display === 'none';
-      repliesContainer.style.display = hidden ? 'block' : 'none';
-      toggleRepliesBtn.textContent = hidden ? 'Ocultar respuestas' : 'Mostrar respuestas';
-    });
-
-    sendReplyBtn.addEventListener('click', () => {
-      const replyText = replyInput.value.trim();
-      if (replyText) {
-        const reply = new Twist(replyText);
-        this.replies.push(reply);
-        repliesContainer.appendChild(reply.render());
-        replyInput.value = '';
-        repliesContainer.style.display = 'block';
-        toggleRepliesBtn.style.display = 'inline';
+    submitReplyButton.addEventListener("click", () => {
+      const replyContent = replyInput.value.trim();
+      if (replyContent) {
+        const replyTweet = createTweet(replyContent);
+        tweet.replies.push(replyTweet);
+        replyInput.value = "";
+        tweet.showReplies = true; // Mostrar respuestas cuando se añade una nueva
+        renderTweets(); // Volver a dibujar todo
       }
     });
 
-    replyBox.appendChild(replyInput);
-    replyBox.appendChild(sendReplyBtn);
+    div.appendChild(contentP);
+    div.appendChild(timestamp);
+    div.appendChild(document.createElement("br"));
+    div.appendChild(replyButton);
+    div.appendChild(replyInput);
+    div.appendChild(submitReplyButton);
 
-    twistElement.appendChild(contentText);
-    twistElement.appendChild(timestamp);
-    twistElement.appendChild(replyButton);
-    twistElement.appendChild(replyBox);
-    twistElement.appendChild(toggleRepliesBtn);
-    twistElement.appendChild(repliesContainer);
+    if (tweet.replies.length > 0) {
+      const toggleRepliesButton = document.createElement("button");
+      toggleRepliesButton.textContent = tweet.showReplies ? "Ocultar respuestas" : "Ver respuestas";
+      toggleRepliesButton.className = "replies-toggle";
+      toggleRepliesButton.addEventListener("click", () => {
+        tweet.showReplies = !tweet.showReplies;
+        renderTweets(); // ⚠️ Necesitamos esta función definida globalmente
+      });
+      div.appendChild(document.createElement("br"));
+      div.appendChild(toggleRepliesButton);
+    }
 
-    return twistElement;
+    if (tweet.replies.length > 0 && tweet.showReplies) {
+      tweet.replies.forEach(reply => {
+        div.appendChild(renderTweet(reply, depth + 1));
+      });
+    }
+
+    return div;
   }
-}
 
-publishBtn.addEventListener('click', () => {
-  const content = twistInput.value.trim();
-  if (content) {
-    const newTwist = new Twist(content);
-    twistThread.prepend(newTwist.render());
-    twistInput.value = '';
+  function renderTweets(): void {
+    tweetContainer.innerHTML = "";
+    tweets.forEach(t => {
+      tweetContainer.appendChild(renderTweet(t));
+    });
   }
+
+  postButton.addEventListener("click", () => {
+    const content = tweetInput.value.trim();
+    if (content) {
+      const tweet = createTweet(content);
+      tweets.push(tweet);
+      tweetInput.value = "";
+      renderTweets(); // Usamos la función general de renderizado
+    }
+  });
+
+const toggleButton = document.getElementById("darkModeToggle");
+
+  if (toggleButton) {
+    toggleButton.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+
+      // Cambiar ícono de luna a sol o viceversa
+      if (document.body.classList.contains("dark-mode")) {
+        toggleButton.textContent = "☀️";
+      } else {
+        toggleButton.textContent = "🌙";
+      }
+    });
+  }
+
 });
