@@ -12,44 +12,36 @@ var Twist = /** @class */ (function () {
         var _this = this;
         var twistElement = document.createElement('div');
         twistElement.className = 'twist';
-        // Contenido principal
         var contentText = document.createElement('p');
-        contentText.textContent = this.content + ' (' + this.timestamp.toLocaleTimeString() + ')';
-        // Botón de respuesta
+        contentText.textContent = this.content;
+        var timestamp = document.createElement('small');
+        timestamp.textContent = this.timestamp.toLocaleString();
         var replyButton = document.createElement('button');
         replyButton.textContent = 'Responder';
-        replyButton.style.marginTop = '5px';
-        // Contenedor de respuestas
-        var repliesContainer = document.createElement('div');
-        repliesContainer.className = 'replies';
-        // Botón de ocultar/mostrar respuestas
+        replyButton.className = 'reply-button';
         var toggleRepliesBtn = document.createElement('button');
         toggleRepliesBtn.textContent = 'Ocultar respuestas';
+        toggleRepliesBtn.className = 'replies-toggle';
         toggleRepliesBtn.style.display = 'none';
-        toggleRepliesBtn.addEventListener('click', function () {
-            if (repliesContainer.style.display === 'none') {
-                repliesContainer.style.display = 'block';
-                toggleRepliesBtn.textContent = 'Ocultar respuestas';
-            }
-            else {
-                repliesContainer.style.display = 'none';
-                toggleRepliesBtn.textContent = 'Mostrar respuestas';
-            }
-        });
-        // Campo para nueva respuesta
+        var repliesContainer = document.createElement('div');
+        repliesContainer.className = 'replies';
+        var replyBox = document.createElement('div');
+        replyBox.className = 'reply-box';
+        replyBox.style.display = 'none';
         var replyInput = document.createElement('textarea');
-        replyInput.placeholder = 'Escribe una respuesta...';
         replyInput.rows = 2;
-        replyInput.style.display = 'none';
+        replyInput.placeholder = 'Escribe una respuesta...';
         var sendReplyBtn = document.createElement('button');
-        sendReplyBtn.textContent = 'Enviar respuesta';
-        sendReplyBtn.style.display = 'none';
-        // Mostrar campo al hacer clic en "Responder"
+        sendReplyBtn.textContent = 'Enviar';
+        sendReplyBtn.className = 'submit-reply';
         replyButton.addEventListener('click', function () {
-            replyInput.style.display = 'block';
-            sendReplyBtn.style.display = 'inline-block';
+            replyBox.style.display = replyBox.style.display === 'none' ? 'flex' : 'none';
         });
-        // Lógica para agregar respuesta
+        toggleRepliesBtn.addEventListener('click', function () {
+            var hidden = repliesContainer.style.display === 'none';
+            repliesContainer.style.display = hidden ? 'block' : 'none';
+            toggleRepliesBtn.textContent = hidden ? 'Ocultar respuestas' : 'Mostrar respuestas';
+        });
         sendReplyBtn.addEventListener('click', function () {
             var replyText = replyInput.value.trim();
             if (replyText) {
@@ -57,16 +49,16 @@ var Twist = /** @class */ (function () {
                 _this.replies.push(reply);
                 repliesContainer.appendChild(reply.render());
                 replyInput.value = '';
-                replyInput.style.display = 'none';
-                sendReplyBtn.style.display = 'none';
-                toggleRepliesBtn.style.display = 'inline-block';
+                repliesContainer.style.display = 'block';
+                toggleRepliesBtn.style.display = 'inline';
             }
         });
-        // Armar el twist
+        replyBox.appendChild(replyInput);
+        replyBox.appendChild(sendReplyBtn);
         twistElement.appendChild(contentText);
+        twistElement.appendChild(timestamp);
         twistElement.appendChild(replyButton);
-        twistElement.appendChild(replyInput);
-        twistElement.appendChild(sendReplyBtn);
+        twistElement.appendChild(replyBox);
         twistElement.appendChild(toggleRepliesBtn);
         twistElement.appendChild(repliesContainer);
         return twistElement;
@@ -77,7 +69,7 @@ publishBtn.addEventListener('click', function () {
     var content = twistInput.value.trim();
     if (content) {
         var newTwist = new Twist(content);
-        twistThread.appendChild(newTwist.render());
+        twistThread.prepend(newTwist.render());
         twistInput.value = '';
     }
 });

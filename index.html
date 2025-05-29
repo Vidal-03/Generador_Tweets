@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>twists</title>
-    <link rel="stylesheet" href="estilo.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Twists</title>
+  <link rel="stylesheet" href="estilo_intermedio.css" />
 </head>
 <body>
-    <main class="container">
-    <section class="new-twist">
+  <div class="main-layout">
+    <!-- Panel izquierdo -->
+    <section class="left-panel">
+      <h2>Generador de Twists</h2>
       <textarea id="twistInput" placeholder="¿Qué estás pensando?" rows="3"></textarea>
-      <button id="publishBtn">Publicar</button>
+      <button id="publishBtn">Twittear</button>
+      <div class="inspiration-box">
+        <p><strong>¿Necesitas inspiración?</strong></p>
+        <ul>
+          <li>Cuenta algo que aprendiste hoy.</li>
+          <li>Comparte una idea breve.</li>
+          <li>Haz una pregunta interesante.</li>
+        </ul>
+      </div>
     </section>
-    <section id="twistThread" class="twist-thread">
+
+    <!-- Panel derecho -->
+    <section class="right-panel" id="twistThread">
     </section>
-  </main>
+  </div>
   <script type="module" src="app.js"></script>
 </body>
 </html>

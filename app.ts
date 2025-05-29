@@ -11,50 +11,46 @@ class Twist {
     const twistElement = document.createElement('div');
     twistElement.className = 'twist';
 
-    // Contenido principal
     const contentText = document.createElement('p');
-    contentText.textContent = this.content + ' (' + this.timestamp.toLocaleTimeString() + ')';
+    contentText.textContent = this.content;
 
-    // Botón de respuesta
+    const timestamp = document.createElement('small');
+    timestamp.textContent = this.timestamp.toLocaleString();
+
     const replyButton = document.createElement('button');
     replyButton.textContent = 'Responder';
-    replyButton.style.marginTop = '5px';
+    replyButton.className = 'reply-button';
 
-    // Contenedor de respuestas
+    const toggleRepliesBtn = document.createElement('button');
+    toggleRepliesBtn.textContent = 'Ocultar respuestas';
+    toggleRepliesBtn.className = 'replies-toggle';
+    toggleRepliesBtn.style.display = 'none';
+
     const repliesContainer = document.createElement('div');
     repliesContainer.className = 'replies';
 
-    // Botón de ocultar/mostrar respuestas
-    const toggleRepliesBtn = document.createElement('button');
-    toggleRepliesBtn.textContent = 'Ocultar respuestas';
-    toggleRepliesBtn.style.display = 'none';
-    toggleRepliesBtn.addEventListener('click', () => {
-      if (repliesContainer.style.display === 'none') {
-        repliesContainer.style.display = 'block';
-        toggleRepliesBtn.textContent = 'Ocultar respuestas';
-      } else {
-        repliesContainer.style.display = 'none';
-        toggleRepliesBtn.textContent = 'Mostrar respuestas';
-      }
-    });
+    const replyBox = document.createElement('div');
+    replyBox.className = 'reply-box';
+    replyBox.style.display = 'none';
 
-    // Campo para nueva respuesta
     const replyInput = document.createElement('textarea');
-    replyInput.placeholder = 'Escribe una respuesta...';
     replyInput.rows = 2;
-    replyInput.style.display = 'none';
+    replyInput.placeholder = 'Escribe una respuesta...';
 
     const sendReplyBtn = document.createElement('button');
-    sendReplyBtn.textContent = 'Enviar respuesta';
-    sendReplyBtn.style.display = 'none';
+    sendReplyBtn.textContent = 'Enviar';
+    sendReplyBtn.className = 'submit-reply';
 
-    // Mostrar campo al hacer clic en "Responder"
     replyButton.addEventListener('click', () => {
-      replyInput.style.display = 'block';
-      sendReplyBtn.style.display = 'inline-block';
+      replyBox.style.display = replyBox.style.display === 'none' ? 'flex' : 'none';
     });
 
-    // Lógica para agregar respuesta
+    toggleRepliesBtn.addEventListener('click', () => {
+      const hidden = repliesContainer.style.display === 'none';
+      repliesContainer.style.display = hidden ? 'block' : 'none';
+      toggleRepliesBtn.textContent = hidden ? 'Ocultar respuestas' : 'Mostrar respuestas';
+    });
+
     sendReplyBtn.addEventListener('click', () => {
       const replyText = replyInput.value.trim();
       if (replyText) {
@@ -62,17 +58,18 @@ class Twist {
         this.replies.push(reply);
         repliesContainer.appendChild(reply.render());
         replyInput.value = '';
-        replyInput.style.display = 'none';
-        sendReplyBtn.style.display = 'none';
-        toggleRepliesBtn.style.display = 'inline-block';
+        repliesContainer.style.display = 'block';
+        toggleRepliesBtn.style.display = 'inline';
       }
     });
 
-    // Armar el twist
+    replyBox.appendChild(replyInput);
+    replyBox.appendChild(sendReplyBtn);
+
     twistElement.appendChild(contentText);
+    twistElement.appendChild(timestamp);
     twistElement.appendChild(replyButton);
-    twistElement.appendChild(replyInput);
-    twistElement.appendChild(sendReplyBtn);
+    twistElement.appendChild(replyBox);
     twistElement.appendChild(toggleRepliesBtn);
     twistElement.appendChild(repliesContainer);
 
@@ -84,7 +81,7 @@ publishBtn.addEventListener('click', () => {
   const content = twistInput.value.trim();
   if (content) {
     const newTwist = new Twist(content);
-    twistThread.appendChild(newTwist.render());
+    twistThread.prepend(newTwist.render());
     twistInput.value = '';
   }
 });
