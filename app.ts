@@ -24,6 +24,20 @@ class Twist {
     const repliesContainer = document.createElement('div');
     repliesContainer.className = 'replies';
 
+    // Botón de ocultar/mostrar respuestas
+    const toggleRepliesBtn = document.createElement('button');
+    toggleRepliesBtn.textContent = 'Ocultar respuestas';
+    toggleRepliesBtn.style.display = 'none';
+    toggleRepliesBtn.addEventListener('click', () => {
+      if (repliesContainer.style.display === 'none') {
+        repliesContainer.style.display = 'block';
+        toggleRepliesBtn.textContent = 'Ocultar respuestas';
+      } else {
+        repliesContainer.style.display = 'none';
+        toggleRepliesBtn.textContent = 'Mostrar respuestas';
+      }
+    });
+
     // Campo para nueva respuesta
     const replyInput = document.createElement('textarea');
     replyInput.placeholder = 'Escribe una respuesta...';
@@ -42,12 +56,15 @@ class Twist {
 
     // Lógica para agregar respuesta
     sendReplyBtn.addEventListener('click', () => {
-      const replyContent = replyInput.value.trim();
-      if (replyContent !== '') {
-        const reply = new Twist(replyContent);
+      const replyText = replyInput.value.trim();
+      if (replyText) {
+        const reply = new Twist(replyText);
         this.replies.push(reply);
         repliesContainer.appendChild(reply.render());
         replyInput.value = '';
+        replyInput.style.display = 'none';
+        sendReplyBtn.style.display = 'none';
+        toggleRepliesBtn.style.display = 'inline-block';
       }
     });
 
@@ -56,20 +73,17 @@ class Twist {
     twistElement.appendChild(replyButton);
     twistElement.appendChild(replyInput);
     twistElement.appendChild(sendReplyBtn);
+    twistElement.appendChild(toggleRepliesBtn);
     twistElement.appendChild(repliesContainer);
 
     return twistElement;
   }
 }
 
-
-const twists: Twist[] = [];
-
 publishBtn.addEventListener('click', () => {
   const content = twistInput.value.trim();
-  if (content !== '') {
+  if (content) {
     const newTwist = new Twist(content);
-    twists.push(newTwist);
     twistThread.appendChild(newTwist.render());
     twistInput.value = '';
   }
